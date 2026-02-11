@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>recruitee</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .account-icon {
+      width: 36px;
+      height: 36px;
+      border: 2px solid #1a1a1a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .account-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Grid */
+    .container {
+      padding: 20px;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .card:active {
+      transform: scale(0.97);
+    }
+
+    .card-image {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .card-title {
+      margin-top: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      text-align: center;
+    }
+
+    /* Detail Container */
+    .detail-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 200;
+      animation: fadeIn 0.3s;
+    }
+
+    .detail-overlay.active {
+      display: flex;
+    }
+
+    .detail-container {
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      max-width: 420px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 0 0 32px 0;
+      animation: slideUp 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .detail-image {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 24px 24px 0 0;
+    }
+
+    .detail-content {
+      padding: 24px;
+    }
+
+    .detail-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+
+    .detail-info {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .detail-info div {
+      margin-bottom: 8px;
+    }
+
+    /* Form Styles */
+    .form-section {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .input-container {
+      width: 100%;
+      padding: 16px;
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 15px;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      min-height: 56px;
+    }
+
+    .input-container:hover {
+      border-color: #bbb;
+    }
+
+    .input-container.filled {
+      background: #fff;
+      border-color: #1a1a1a;
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+
+    .input-container.filled::before {
+      content: '✓ ';
+      color: #4CAF50;
+      margin-right: 8px;
+    }
+
+    .btn-learn {
+      width: 100%;
+      padding: 16px;
+      background: #ccc;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: not-allowed;
+      transition: all 0.3s;
+      opacity: 0.6;
+    }
+
+    .btn-learn.enabled {
+      background: #1a1a1a;
+      cursor: pointer;
+      opacity: 1;
+    }
+
+    .btn-learn.enabled:active {
+      background: #000;
+      transform: scale(0.98);
+    }
+
+    /* Success Screen */
+    .success-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 300;
+    }
+
+    .success-screen.active {
+      display: flex;
+    }
+
+    .checkmark {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #4CAF50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.5s;
+    }
+
+    @keyframes scaleIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .checkmark svg {
+      width: 50px;
+      height: 50px;
+      stroke: white;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    .success-text {
+      margin-top: 24px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 400;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="logo">Recruitee</div>
+    <div class="account-icon">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- Grid Container -->
+  <div class="container" id="mainContainer">
+    <div class="grid" id="jobsGrid"></div>
+  </div>
+
+  <!-- Detail Overlay -->
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-container">
+      <img class="detail-image" id="detailImage" src="" alt="">
+      <div class="detail-content">
+        <h2 class="detail-title" id="detailTitle"></h2>
+        <div class="detail-info">
+          <div id="detailLocation">📍 Location: Worldwide</div>
+          <div id="detailType">⏰ Work: Full-time / Shifts</div>
+          <div>✨ No experience needed</div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-section">
+          <label class="form-label">Full Name</label>
+          <div class="input-container" id="nameInput" data-value="">
+            Click to fill in your name
+          </div>
+        </div>
+
+        <div class="form-section">
+          <label class="form-label">Email Address</label>
+          <div class="input-container" id="emailInput" data-value="">
+            Click to fill in your email
+          </div>
+        </div>
+
+        <button class="btn-learn" id="btnLearn">Learn more</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Screen -->
+  <div class="success-screen" id="successScreen">
+    <div class="checkmark">
+      <svg viewBox="0 0 52 52">
+        <polyline points="14 27 22 35 38 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    // Data
+    const jobs = [
+      {
+        title: 'Remote Worker',
+        imageUrl: 'images/remote.jpg',
+        location: 'Worldwide',
+        type: 'Full-time / Shifts'
+      },
+      {
+        title: 'Warehouse Associate',
+        imageUrl: 'images/ware.jpg',
+        location: 'Worldwide',
+        type: 'Full-time / Shifts'
+      },
+      {
+        title: 'Security Guard',
+        imageUrl: 'images/sec.jpg',
+        location: 'Worldwide',
+        type: 'Full-time / Shifts'
+      },
+      {
+        title: 'Oil and Gas industry Worker',
+        imageUrl: 'images/oil.jpg',
+        location: 'Worldwide',
+        type: 'Full-time / Shifts'
+      },
+      {
+        title: 'Packaging Staff',
+        imageUrl: 'images/pack.jpg',
+        location: 'Worldwide',
+        type: 'Full-time / Shifts'
+      },
+      {
+        title: 'Cleaning Crew',
+        imageUrl: 'images/clean.jpg',
+        location: 'Worldwide',
+        type: 'Full-time / Shifts'
+      }
+    ];
+
+    // Sample data for auto-fill (you can customize these)
+    const sampleNames = [
+      'Lissa Bom',
+    ];
+
+    const sampleEmails = [
+      'lisabom@mail.com',
+    ];
+
+    let nameIndex = Math.floor(Math.random() * sampleNames.length);
+    let emailIndex = Math.floor(Math.random() * sampleEmails.length);
+
+    // Form state
+    let formState = {
+      name: false,
+      email: false
+    };
+
+    // Render Grid
+    const grid = document.getElementById('jobsGrid');
+    jobs.forEach((job, index) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img class="card-image" src="${job.imageUrl}" alt="${job.title}">
+        <div class="card-title">${job.title}</div>
+      `;
+      card.addEventListener('click', () => openDetail(index));
+      grid.appendChild(card);
+    });
+
+    // Open Detail
+    function openDetail(index) {
+      const job = jobs[index];
+      document.getElementById('detailImage').src = job.imageUrl;
+      document.getElementById('detailTitle').textContent = job.title;
+      document.getElementById('detailLocation').textContent = `📍 Location: ${job.location}`;
+      document.getElementById('detailType').textContent = `⏰ Work: ${job.type}`;
+      document.getElementById('detailOverlay').classList.add('active');
+      
+      // Reset form state
+      formState = { name: false, email: false };
+      resetForm();
+    }
+
+    // Reset form
+    function resetForm() {
+      const nameInput = document.getElementById('nameInput');
+      const emailInput = document.getElementById('emailInput');
+      const btnLearn = document.getElementById('btnLearn');
+
+      nameInput.classList.remove('filled');
+      emailInput.classList.remove('filled');
+      nameInput.textContent = 'Fill in your name';
+      nameInput.dataset.value = '';
+      emailInput.textContent = 'Fill in your email';
+      emailInput.dataset.value = '';
+      
+      btnLearn.classList.remove('enabled');
+    }
+
+    // Name input click handler
+    document.getElementById('nameInput').addEventListener('click', function() {
+      if (!formState.name) {
+        const name = sampleNames[nameIndex];
+        this.textContent = name;
+        this.dataset.value = name;
+        this.classList.add('filled');
+        formState.name = true;
+        checkFormCompletion();
+      }
+    });
+
+    // Email input click handler
+    document.getElementById('emailInput').addEventListener('click', function() {
+      if (!formState.email) {
+        const email = sampleEmails[emailIndex];
+        this.textContent = email;
+        this.dataset.value = email;
+        this.classList.add('filled');
+        formState.email = true;
+        checkFormCompletion();
+      }
+    });
+
+    // Check if form is complete
+    function checkFormCompletion() {
+      const btnLearn = document.getElementById('btnLearn');
+      if (formState.name && formState.email) {
+        btnLearn.classList.add('enabled');
+      } else {
+        btnLearn.classList.remove('enabled');
+      }
+    }
+
+    // Close Detail on overlay click
+    document.getElementById('detailOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'detailOverlay') {
+        document.getElementById('detailOverlay').classList.remove('active');
+      }
+    });
+
+    // Learn More Button
+    document.getElementById('btnLearn').addEventListener('click', function() {
+      if (!this.classList.contains('enabled')) {
+        return; // Do nothing if button is not enabled
+      }
+      
+      document.getElementById('header').classList.add('hidden');
+      document.getElementById('mainContainer').classList.add('hidden');
+      document.getElementById('detailOverlay').classList.remove('active');
+      document.getElementById('successScreen').classList.add('active');
+      startConfetti();
+    });
+
+    // Confetti
+    function startConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F'];
+
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          vx: Math.random() * 4 - 2,
+          vy: Math.random() * 3 + 2,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: Math.random() * 10 - 5
+        });
+      }
+
+      let animationId;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach((p, index) => {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation * Math.PI / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+          ctx.restore();
+
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rotation += p.rotationSpeed;
+          p.vy += 0.1;
+
+          if (p.y > canvas.height) {
+            particles.splice(index, 1);
+          }
+        });
+
+        if (particles.length > 0) {
+          animationId = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      animate();
+
+      setTimeout(() => {
+        particles.length = 0;
+        cancelAnimationFrame(animationId);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

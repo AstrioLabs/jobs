@@ -273,6 +273,61 @@
       fill: none;
     }
 
+
+    .success-message {
+      margin-top: 22px;
+      width: min(340px, calc(100vw - 40px));
+      background: #f1f1f4;
+      border-radius: 20px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+      animation: messageIn 0.45s ease 0.35s forwards;
+    }
+
+    .success-avatar {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .success-message-content {
+      min-width: 0;
+    }
+
+    .success-message-sender {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 2px;
+    }
+
+    .success-message-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.25;
+    }
+
+    @keyframes messageIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     .success-text {
       margin-top: 24px;
       font-size: 28px;
@@ -321,6 +376,7 @@
         <div class="detail-info">
           <div id="detailLocation">📍 Location: Worldwide</div>
           <div id="detailType">⏰ Work: Full-time / Shifts</div>
+          <div id="detailPay">💰 Pay: $25–$35 per hour</div>
           <div>✨ No experience needed</div>
         </div>
 
@@ -350,6 +406,14 @@
       <svg viewBox="0 0 52 52">
         <polyline points="14 27 22 35 38 19"/>
       </svg>
+    </div>
+
+    <div class="success-message">
+      <div class="success-avatar">R</div>
+      <div class="success-message-content">
+        <div class="success-message-sender">Recruitee</div>
+        <div class="success-message-text">Application submitted</div>
+      </div>
     </div>
   </div>
 
